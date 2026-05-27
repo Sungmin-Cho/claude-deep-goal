@@ -34,11 +34,13 @@ user-invocable: true
 
 **Cross-platform self-containment**: 타 플랫폼에서 `deep-goal-workflow` 자동 로드가 약해도 동작하도록, 아래 핵심 규칙을 **의도적으로 인라인 보존**한다. 이는 `deep-goal-workflow`와의 의도적 duplication이며, 변경 시 양쪽을 동기화해야 한다.
 
+<!-- SYNC: mirrors deep-goal-workflow + references/condition-compiler.md·platform-matrix.md — 변경 시 동기화 -->
+
 ---
 
 ## 활성화 모델 (인라인 핵심)
 
-네이티브 `/goal`은 플러그인/스킬이 프로그래밍적으로 **자동 호출 불가**다(공식 문서 검증 완료).
+네이티브 `/goal`은 플러그인/스킬이 프로그래밍적으로 **자동 호출 불가**다(docs/superpowers/specs/2026-05-27-deep-goal-design.md §3 검증 완료).
 
 deep-goal의 역할은 완성된 `/goal` 조건을 제시하는 데서 끝나고, **활성화 트리거는 사용자가 직접 누른다**. 활성화 마찰은 "한 줄 복사-붙여넣기"로 최소화한다.
 
@@ -104,14 +106,14 @@ Claude의 `/goal` 평가자(Haiku 모델)는 **도구를 호출하지 않으며*
 | ② **적합성 평가** | fitness-rubric 적용 → 적합/재구성/반려 판정 |
 | ③ **재구성 대화** | 균형 게이트 — 종료조건 보강·범위 분해·증명 커맨드 식별 / 구조적 부적합 시 반려 + 대안 |
 | ④ **레시피 매칭** | 감지된 플러그인으로 시너지 레시피 제안, 없으면 단발 goal |
-| ⑤ **사전 준비물 탐색** | Glob/Read로 읽을 파일·증명 커맨드·불변 제약 발굴 |
+| ⑤ **사전 준비물 탐색** | Glob/Read로 읽을 파일·증명 커맨드·불변 제약 발굴. 파일 탐색 도구 없으면 사용자에게 컨텍스트 요청 + 결과를 '미검증(unverified)' 표시 + ready-to-run 단정 금지 |
 | ⑥ **컴파일 + 제시** | 4요소 + 표면화 지침 + 플랫폼 분기 적용 → 복사용 코드블록 + 활성화 안내 |
 
 ---
 
 ## 무인수 대화 진입
 
-`/deep-goal` 또는 `$deep-goal:deep-goal`을 인수 없이 호출하면:
+`/deep-goal` 또는 `$deep-goal:deep-goal`을 인수 없이 호출하면 **AskUserQuestion**을 사용하여 목표를 질문한다:
 
 > **"무엇을 끝까지 진행하고 싶나요? 목표를 설명해주시면 goal 조건으로 컴파일해 드립니다."**
 
