@@ -188,10 +188,10 @@ deep-goal/
 ### 예시 (Claude, robust-implementation 레시피)
 ```
 deep-work 세션으로 <기능>을 Research→Plan→Implement→Test 순으로 진행한다.
-Plan 승인 직후와 Implement 완료 직후 각각 deep-review-loop(--max=3)를 돌려
-verdict가 APPROVE가 될 때까지 대응한다.
-종료조건: 모든 phase 완료 AND 최종 deep-review-loop APPROVE AND 테스트 전체 통과.
-각 단계 결과(phase 전환·review verdict·테스트 출력)를 대화에 명시적으로 보고할 것. 최대 40턴.
+deep-work의 Plan 승인과 각 phase Exit Gate에서는 사용자에게 승인을 요청하고, 승인이 대화에 보고된 뒤에만 다음 단계로 진행한다(승인 전 자율 진행 금지 — 이 게이트는 종료조건의 일부다).
+Plan 승인 직후와 Implement 완료 직후 각각 deep-review-loop(--max=3)를 돌려 verdict가 APPROVE가 될 때까지 대응한다.
+종료조건: 모든 phase 완료 AND 모든 승인 게이트(Plan 승인·Exit Gate) 통과가 보고됨 AND 최종 deep-review-loop APPROVE AND 테스트 전체 통과.
+각 단계 결과(phase 전환·승인 게이트·review verdict·테스트 출력)를 대화에 명시적으로 보고할 것. 최대 40턴.
 ```
 마지막 문장(대화 명시 보고)이 없으면 Claude 평가자가 종료를 판정하지 못한다 — deep-goal이 책임지는 비자명한 컴파일 규칙.
 
