@@ -1,0 +1,11 @@
+{
+  "name": "deep-goal",
+  "version": "1.0.0",
+  "type": "module",
+  "private": true,
+  "description": "Goal condition compiler for long-running autonomous work",
+  "license": "MIT",
+  "scripts": {
+    "verify": "bash scripts/verify-plugin.sh && bash scripts/verify-selftest.sh"
+  }
+}
