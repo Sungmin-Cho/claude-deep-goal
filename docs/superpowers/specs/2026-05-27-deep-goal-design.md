@@ -207,7 +207,7 @@ verdict가 APPROVE가 될 때까지 대응한다.
 | **ship-and-document** | deep-docs + deep-wiki | 구현 완료 → docs garden + wiki ingest + 최종 review |
 
 ### 현실적 제약 (레시피 문서에 명시)
-- **deep-work**는 phase마다 Exit Gate(AskUserQuestion 승인) + Research/Plan 2차 승인이 있어 **완전 무인 자율은 불가**. goal은 *턴 간 프롬프트*를 없애줄 뿐, 승인 지점은 사용자 입력을 요구한다. 레시피는 이 점을 정직하게 안내한다.
+- **deep-work**의 필수 사용자 인터랙션 핵심은 **Plan 승인**이며(`deep-work-workflow`의 "Plan 승인이 유일한 필수 인터랙션"), phase 사이 Exit Gate는 "진행 / 재실행 / 일시정지" 확인이다(Phase 5 Test 제외). 따라서 **완전 무인 자율은 불가** — goal은 *턴 간 프롬프트*를 없애줄 뿐 승인·확인 지점은 사용자 입력을 요구한다. 레시피는 게이트를 실제보다 많게 묘사하지 않고 정직하게 안내한다. (리뷰 W3 교정)
 - **deep-review-loop**는 `--max=N` 자동 수렴이라 게이트로 적합.
 
 ---
@@ -217,6 +217,7 @@ verdict가 APPROVE가 될 때까지 대응한다.
 - 진입 `SKILL.md`는 deep-docs 패턴대로 **self-contained** — workflow의 핵심 규칙(rubric 요약, 4요소, 플랫폼 분기)을 인라인 보존(의도적 duplication). 타 플랫폼에서 sibling skill 자동 로드가 약해도 동작.
 - 플랫폼 감지 → 컴파일 분기.
 - 탐색이 메인 인라인이라 Agent 도구 부재 플랫폼(Codex/Copilot/Gemini)에서도 추가 fallback 불필요.
+- **references 로드 실패 시 degrade 보증 (리뷰 codex high1 대응)**: references root 해석은 플랫폼 중립이다 — `${CLAUDE_PLUGIN_ROOT}` 설정 시 그 경로, unset 시 진입 SKILL 자신의 절대 경로 기준 상대 해석 또는 작업트리 glob 탐색. 셋 다 실패해도 진입 SKILL이 self-contained 이므로 평가·4요소 컴파일·플랫폼 분기 등 **코어 기능은 동작**한다(references는 레시피/상세에만 필요). 즉 cross-platform 코어 약속은 fallback 전면 실패에도 깨지지 않는다.
 - 매니페스트 2벌(`.claude-plugin` / `.codex-plugin`) + `CLAUDE.md` / `AGENTS.md`.
 - 릴리스 시 **deep-suite 마켓플레이스 등록**(형제 동일 관례 — `marketplace.json` 2곳 + README 표).
 
@@ -237,8 +238,9 @@ verdict가 APPROVE가 될 때까지 대응한다.
 
 - 플랫폼 감지 구체 방법 (환경 변수 / 매니페스트 존재 / 형제 detect 스크립트 재사용 여부)
 - 설치된 deep-* 플러그인 감지 구체 방법 (형제들의 detect 패턴 참고)
-- `PLAN.md` 분리 임계치 (조건 길이 몇 자 이상에서 분리할지)
-- v1 레시피 3개 각각의 상세 시퀀스 문구 (특히 deep-work 승인 게이트와의 상호작용 문구)
+- ~~`PLAN.md` 분리 임계치~~ → **해소(W4/I5)**: ~2,800자(4,000의 70%) 또는 순차 게이트 3개 이상이면 분리 (condition-compiler / plan Task 4).
+- **4,000자·`stop after N turns` 상한 수치의 출처(W4)** — Claude `/goal` 공식 문서 기준이나 버전 변동 가능. condition-compiler에 근거 주석 + 컴파일 출력에 "현재 버전 기준" 단서 포함.
+- v1 레시피 3개 각각의 상세 시퀀스 문구 (특히 deep-work 승인 게이트와의 상호작용 문구 — W3 실제 명세 대조)
 - README/CHANGELOG/매니페스트 메타데이터 초기값
 
 ---
