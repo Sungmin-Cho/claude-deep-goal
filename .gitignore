@@ -1,0 +1,8 @@
+# 개발 산출물 — 최종 플러그인 배포에 미포함
+.deep-review/
+docs/
+
+# 시스템 / 에디터
+.DS_Store
+*.log
+node_modules/
