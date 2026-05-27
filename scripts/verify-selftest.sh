@@ -5,7 +5,7 @@ set -u
 fail=0
 
 # Single trap to clean up all fixtures on exit (including Ctrl-C / abnormal termination).
-trap 'rm -f skills/.selftest-placeholder.md skills/deep-goal/.selftest-autoclaim.md /tmp/deep-goal-stub.md' EXIT
+trap 'rm -f skills/.selftest-placeholder.md skills/deep-goal/.selftest-autoclaim.md /tmp/deep-goal-stub.md skills/deep-goal/.SKILL.md.selftest-bak' EXIT
 
 # (1) placeholder gate catches forbidden tokens in skills/ (an() C1 regression guard)
 # mkdir -p ensures skills/ exists even before Task 3 creates content there (harmless).
@@ -19,19 +19,29 @@ else
 fi
 rm -f skills/.selftest-placeholder.md
 
-# (2) self-containment multi-element check filters keyword-only stubs (W1 regression guard)
-printf '종료조건 Codex Skill(\n' > /tmp/deep-goal-stub.md
-miss=0
-for p in '증명' '(불변|제약)' '(표면화|대화에)'; do
-  grep -qE "$p" /tmp/deep-goal-stub.md || miss=1
-done
-if [ "$miss" -eq 1 ]; then
-  echo "PASS: stub fails multi-element check"
+# (2) self-containment multi-element check — verify-plugin.sh catches keyword-only stubs (W1 regression guard)
+# Place a keyword-only stub at skills/deep-goal/ temporarily (real SKILL.md backed up),
+# run verify-plugin.sh, and confirm it reports FAIL for the self-containment checks.
+stub_dir="skills/deep-goal"
+real_skill="${stub_dir}/SKILL.md"
+backup_skill="${stub_dir}/.SKILL.md.selftest-bak"
+mkdir -p "$stub_dir"
+# Backup real SKILL.md if present; write keyword-only stub (missing 증명/불변/표면화 elements).
+[ -f "$real_skill" ] && mv "$real_skill" "$backup_skill"
+printf '종료조건 Codex Skill(\nentry: proof-method\n' > "$real_skill"
+# Run verify-plugin.sh; it should FAIL (non-zero or report "Failed: N" > 0).
+vout=$(bash scripts/verify-plugin.sh 2>&1)
+vstatus=$?
+# Restore real SKILL.md before evaluating (so trap cleanup is idempotent).
+rm -f "$real_skill"
+[ -f "$backup_skill" ] && mv "$backup_skill" "$real_skill"
+# Expect either non-zero exit OR output containing "Failed: [^0]" — stub must be caught.
+if echo "$vout" | grep -qE 'Failed: [1-9]|✗'; then
+  echo "PASS: stub fails multi-element check (verify-plugin.sh caught it)"
 else
-  echo "FAIL: stub passes"
+  echo "FAIL: stub passed verify-plugin.sh — self-containment check not enforced"
   fail=$((fail+1))
 fi
-rm -f /tmp/deep-goal-stub.md
 
 # (3) reversed activation invariant rejected (codex round3 medium regression guard):
 # "자동 호출 가능" claim must be caught by the an() forbidden-pattern check.
