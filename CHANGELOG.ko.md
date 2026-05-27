@@ -18,7 +18,7 @@
 - 사전 준비물 탐색기(`references/prep-scout.md`): 인라인 코드베이스 스캔 절차(Glob/Grep/Read)로 먼저 읽을 파일·`package.json` scripts/Makefile/CI 설정에서 증명 커맨드·불변 제약 발굴. 파일 도구 없는 환경에서의 degrade 모드 포함.
 
 **시너지 레시피 — 멀티 플러그인 조합 3종**
-- `robust-implementation`: deep-work + deep-review 레시피. Research→Plan→Implement→Test 단계 진행, Plan 승인 게이트 및 Exit Gate 포함. Plan 승인 직후·Implement 완료 직후 각각 deep-review-loop(--max=3) 적용. 종료조건: 모든 phase 완료 AND 모든 승인 게이트 통과 보고 AND 최종 deep-review-loop APPROVE AND 테스트 통과. 완전 무인 자율 불가(goal은 턴 간 프롬프트를 없애줄 뿐, 승인·확인 지점은 사용자 입력 필요)를 명시.
+- `robust-implementation`: deep-work + deep-review 레시피. Research→Plan→Implement→Test 단계 진행, Plan 승인 게이트 및 Exit Gate 포함. Implement 완료 직후 deep-review-loop(--max=3) 적용. 종료조건: 모든 phase 완료 AND 모든 승인 게이트 통과 보고 AND 최종 deep-review-loop APPROVE AND 테스트 통과. 완전 무인 자율 불가(goal은 턴 간 프롬프트를 없애줄 뿐, 승인·확인 지점은 사용자 입력 필요)를 명시.
 - `autonomous-evolution`: deep-evolve 레시피. 목표 fitness metric 도달 또는 상한까지 자율 실험 루프. 매 반복마다 metric 값을 대화에 보고. deep-evolve 자체 측정 루프와 네이티브 goal 턴 상한의 관계 안내.
 - `ship-and-document`: deep-docs + deep-wiki 레시피. 구현 완료 가정 → (deep-review 있으면) 최종 리뷰 게이트 먼저 통과 → deep-docs garden → wiki-ingest. wiki ingest 등 영속 작업은 리뷰 승인 이후 배치. 순서 변경 불가 시 rollback 안내 포함.
 - 레시피 인덱스(`references/recipes/README.md`): 감지된 형제 플러그인과 레시피 제안 매핑 규칙. 복수 레시피 선택 규칙. 매칭 없을 시 단발 goal 폴백.

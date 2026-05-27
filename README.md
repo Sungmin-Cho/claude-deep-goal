@@ -61,7 +61,7 @@ Skill({ skill: "deep-goal:deep-goal", args: "<task>" })
 |---|---|---|
 | **robust-implementation** | deep-work + deep-review detected | Phase-by-phase implementation (Research→Plan→Implement→Test) with Plan approval gate, deep-review-loop APPROVE verdict, and test pass as termination |
 | **autonomous-evolution** | deep-evolve detected | Fitness-metric-driven experiment loop until target metric reached or turn limit hit |
-| **ship-and-document** | deep-docs + deep-wiki detected | Implementation → (review gate if deep-review present) → docs garden → wiki ingest; persistent operations after review approval |
+| **ship-and-document** | deep-docs + deep-wiki detected | Implementation → (review gate if deep-review present) → docs garden → `/wiki-ingest`; persistent operations after review approval |
 
 If no recipe matches, deep-goal compiles a single-shot goal directly.
 
@@ -86,7 +86,7 @@ For Claude: compiled conditions always include "report each step result explicit
 ```bash
 # Claude Code
 git clone https://github.com/Sungmin-Cho/claude-deep-goal.git
-claude plugin add ./claude-deep-goal
+claude plugin add https://github.com/Sungmin-Cho/claude-deep-goal.git
 
 # Codex — add the local path as a plugin directory in your Codex config
 ```
@@ -99,6 +99,10 @@ This path works from the moment you clone. No marketplace registration dependenc
 
 Once registered:
 ```bash
+# Step 1 — add the deep-suite marketplace source (if not already added)
+/plugin marketplace add Sungmin-Cho/claude-deep-suite
+
+# Step 2 — install deep-goal from the marketplace
 # Claude Code
 /plugin install deep-goal@Sungmin-Cho-claude-deep-suite
 
