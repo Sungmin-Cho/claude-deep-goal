@@ -7,6 +7,14 @@
 
 ---
 
+## [1.0.1] — 2026-05-27
+
+### 수정됨
+
+- **플러그인 manifest** — `.claude-plugin/plugin.json`의 `repository`가 object(`{ type, url }`) 형태였다. Claude Code 플러그인 스키마는 string URL을 기대하므로 설치 시 `repository: Invalid input: expected string, received object` 에러가 발생했다. string URL로 변경했다. (`.codex-plugin/plugin.json`은 이미 string이었음.)
+
+---
+
 ## [1.0.0] — 2026-05-27
 
 최초 릴리스 — Claude Code와 Codex용 goal 조건 컴파일러.

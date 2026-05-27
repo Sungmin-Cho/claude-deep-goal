@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.0.1] — 2026-05-27
+
+### Fixed
+
+- **Plugin manifest** — `repository` in `.claude-plugin/plugin.json` was an object (`{ type, url }`); the Claude Code plugin schema expects a string URL, causing installation to fail with `repository: Invalid input: expected string, received object`. Changed to a plain string URL. (`.codex-plugin/plugin.json` was already a string.)
+
+---
+
 ## [1.0.0] — 2026-05-27
 
 Initial release — goal condition compiler for Claude Code and Codex.
