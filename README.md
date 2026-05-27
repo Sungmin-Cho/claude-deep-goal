@@ -2,9 +2,13 @@
 
 # deep-goal
 
+![version](https://img.shields.io/github/package-json/v/Sungmin-Cho/claude-deep-goal?label=version)
+![license](https://img.shields.io/github/license/Sungmin-Cho/claude-deep-goal)
+[![part of deep-suite](https://img.shields.io/badge/part%20of-deep--suite-5b8def)](https://github.com/Sungmin-Cho/claude-deep-suite)
+
 Goal condition compiler — evaluates long-running task requests, reshapes them to fit, scouts prerequisites, and compiles ready-to-paste native `/goal` conditions for Claude Code and Codex.
 
-Part of the [deep-suite](https://github.com/Sungmin-Cho/claude-deep-suite) ecosystem.
+Part of the [deep-suite](https://github.com/Sungmin-Cho/claude-deep-suite) ecosystem — the "orchestration on-ramp" that turns a request into a ready-to-run `/goal`. See the [CHANGELOG](CHANGELOG.md) for release history.
 
 ---
 
@@ -15,6 +19,39 @@ Part of the [deep-suite](https://github.com/Sungmin-Cho/claude-deep-suite) ecosy
 deep-goal evaluates your request, reshapes it if needed, and **presents** the compiled condition. You copy it and trigger `/goal <condition>` yourself — one-line paste, no ceremony.
 
 This is by design: the native `/goal` UI, evaluator, session-resume, and auto-clear are preserved exactly as the platform ships them.
+
+---
+
+## Installation
+
+### Option 1 — Local clone (always works, no marketplace required)
+
+```bash
+# Claude Code
+git clone https://github.com/Sungmin-Cho/claude-deep-goal.git
+claude plugin add https://github.com/Sungmin-Cho/claude-deep-goal.git
+
+# Codex — add the local path as a plugin directory in your Codex config
+```
+
+This path works from the moment you clone. No marketplace registration dependency.
+
+### Option 2 — Marketplace install (requires deep-suite registration)
+
+> **Prerequisite**: deep-goal must be registered in the deep-suite marketplace (`.claude-plugin/marketplace.json` updated with the 40-character merge SHA). This step follows the merge of this repository to `main`.
+
+Once registered:
+```bash
+# Step 1 — add the deep-suite marketplace source (if not already added)
+/plugin marketplace add Sungmin-Cho/claude-deep-suite
+
+# Step 2 — install deep-goal from the marketplace
+# Claude Code
+/plugin install deep-goal@Sungmin-Cho-claude-deep-suite
+
+# Codex — marketplace mirror available after deep-suite push
+$deep-goal:deep-goal
+```
 
 ---
 
@@ -79,39 +116,6 @@ For Claude: compiled conditions always include "report each step result explicit
 
 ---
 
-## Installation
-
-### Option 1 — Local clone (always works, no marketplace required)
-
-```bash
-# Claude Code
-git clone https://github.com/Sungmin-Cho/claude-deep-goal.git
-claude plugin add https://github.com/Sungmin-Cho/claude-deep-goal.git
-
-# Codex — add the local path as a plugin directory in your Codex config
-```
-
-This path works from the moment you clone. No marketplace registration dependency.
-
-### Option 2 — Marketplace install (requires deep-suite registration)
-
-> **Prerequisite**: deep-goal must be registered in the deep-suite marketplace (`.claude-plugin/marketplace.json` updated with the 40-character merge SHA). This step follows the merge of this repository to `main`.
-
-Once registered:
-```bash
-# Step 1 — add the deep-suite marketplace source (if not already added)
-/plugin marketplace add Sungmin-Cho/claude-deep-suite
-
-# Step 2 — install deep-goal from the marketplace
-# Claude Code
-/plugin install deep-goal@Sungmin-Cho-claude-deep-suite
-
-# Codex — marketplace mirror available after deep-suite push
-$deep-goal:deep-goal
-```
-
----
-
 ## deep-suite links
 
 | Plugin | Role |
@@ -128,4 +132,4 @@ $deep-goal:deep-goal
 
 ## License
 
-MIT
+MIT — see [LICENSE](LICENSE).

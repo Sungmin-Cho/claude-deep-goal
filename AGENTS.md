@@ -2,7 +2,9 @@
 
 Goal condition compiler for long-running autonomous work. Evaluates task requests for native `/goal` fitness, reshapes them, scouts prerequisites, and compiles ready-to-paste `/goal` conditions for Claude Code and Codex.
 
-Current version: 1.0.0.
+To check the current version: `jq -r .version .claude-plugin/plugin.json`
+
+> 📄 **Docs maintenance**: this repo's documentation follows `docs/DOCS_RULE.md` (local maintainer guide — single-source-of-truth rules for README / CHANGELOG / this file).
 
 ## Runtime Surfaces
 

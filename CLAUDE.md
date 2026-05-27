@@ -6,6 +6,8 @@ For detailed version history see [`CHANGELOG.md`](CHANGELOG.md) / [`CHANGELOG.ko
 
 To check the current version: `jq -r .version .claude-plugin/plugin.json`
 
+> 📄 **Docs maintenance**: this repo's documentation follows `docs/DOCS_RULE.md` (local maintainer guide — single-source-of-truth rules for README / CHANGELOG / this file).
+
 ---
 
 ## Project Overview
@@ -141,7 +143,7 @@ npm run verify
 - **`verify-plugin.sh`**: grep-based release-lint (positive checks — file existence, frontmatter, content invariants, version sync, CHANGELOG entry, no placeholder tokens).
 - **`verify-selftest.sh`**: negative self-test — confirms that `verify-plugin.sh` actually catches violations (placeholder gate, multi-element self-containment check, activation invariant reversal). Prevents silent checker rot.
 
-Latest release (v1.0.0) shipped at `Passed: N, Failed: 0` with `verify-selftest.sh: ALL-PASS`.
+Both must pass before every release (`verify-selftest.sh` reports `ALL-PASS`).
 
 ---
 
