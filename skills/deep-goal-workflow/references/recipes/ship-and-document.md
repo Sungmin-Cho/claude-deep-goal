@@ -82,7 +82,7 @@ or stop after 30 turns.
 ### Codex (contract 형태)
 
 ```
-/goal 목표: 구현 완료 후 리뷰 → 문서화 → wiki 반영 순으로 배포·문서화를 완수한다.
+목표: 구현 완료 후 리뷰 → 문서화 → wiki 반영 순으로 배포·문서화를 완수한다.
 
 달성 조건:
 - deep-review-loop(--max=3) verdict APPROVE (대화에 보고됨)
@@ -106,7 +106,12 @@ pause 지점: review 미통과 시 대응 필요.
 
 ### review 게이트 없는 경우
 
-`deep-review`가 없으면 review 단계를 건너뛰고 [docs garden → wiki-ingest]만 진행한다. 사용자에게 "코드 품질 검증 없이 진행합니다"를 명시적으로 안내한 후 시작한다.
+`deep-review`가 없으면 docs garden까지만 goal로 컴파일한다. **wiki-ingest는 영속 작업이므로 승인 게이트 없이 자동 진행할 수 없다.**
+
+처리 방침:
+- docs-only goal로 컴파일: `[deep-docs garden 완료]`를 종료조건으로
+- wiki-ingest는 컴파일된 goal에 포함하지 않고 **수동 follow-up**으로 안내: "review 완료 후 직접 `/wiki-ingest`를 실행하세요"
+- 사용자에게 "review 없이 wiki-ingest를 goal에 포함할 수 없습니다 — 영속 작업은 승인 게이트 필수"를 명시적으로 고지한다
 
 ### deep-docs garden의 자동 수정 범위
 
