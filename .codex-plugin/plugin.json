@@ -1,0 +1,21 @@
+{
+  "name": "deep-goal",
+  "version": "1.0.0",
+  "description": "Goal condition compiler for long-running autonomous work",
+  "author": { "name": "Sungmin-Cho" },
+  "repository": "https://github.com/Sungmin-Cho/claude-deep-goal.git",
+  "license": "MIT",
+  "keywords": ["goal", "long-running", "autonomous", "orchestration", "harness"],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Deep Goal",
+    "shortDescription": "Compile a request into a ready-to-run /goal condition",
+    "longDescription": "Evaluate whether a long-running request fits the native goal feature, reshape it, scout prerequisites, and compile a platform-tailored /goal condition you paste to activate.",
+    "developerName": "Sungmin-Cho",
+    "category": "Productivity",
+    "capabilities": ["Interactive", "Read"],
+    "defaultPrompt": ["$deep-goal:deep-goal <your long-running task>"],
+    "brandColor": "#4B5563",
+    "screenshots": []
+  }
+}
