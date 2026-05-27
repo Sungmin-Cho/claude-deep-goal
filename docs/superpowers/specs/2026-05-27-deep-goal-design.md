@@ -119,9 +119,10 @@ deep-goal/
 
 ## 7. 진입 인터페이스
 
-- `/deep-goal <장기 작업>` — 메인 흐름
-- `/deep-goal` (무인수) — "무엇을 끝까지 진행하고 싶나요?" 대화 진입
-- 타 플랫폼: `Skill({ skill: "deep-goal:deep-goal", args: "<요청>" })`
+진입 경로를 맥락별로 구분 (리뷰 codex high2 대응 — `Skill({})`은 SDK 호출이지 Codex 사용자 진입이 아니다):
+- **Claude Code 사용자**: `/deep-goal <장기 작업>` (슬래시) / `/deep-goal` (무인수 → "무엇을 끝까지 진행하고 싶나요?" 대화 진입)
+- **Codex 사용자**: `$deep-goal:deep-goal <장기 작업>` (`.codex-plugin` defaultPrompt와 일치하는 정식 사용자 진입)
+- **프로그래밍 / SDK invoke (Claude·Codex 공통, 사용자 진입 아님)**: `Skill({ skill: "deep-goal:deep-goal", args })`
 - **서브커맨드 최소화** — goal 상태 확인·중단은 네이티브 `/goal`·`/goal clear`가 담당하므로 중복 기능을 만들지 않는다.
 
 ---
