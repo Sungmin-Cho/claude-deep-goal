@@ -1,0 +1,118 @@
+---
+name: deep-goal
+description: Use when the user wants to turn a long-running task into a native /goal condition — evaluating fit, reshaping, scouting prerequisites, and compiling a ready-to-paste condition. Triggers on `/deep-goal`, "set a goal", "long-running task", "run until done", "goal 조건", "장기 자율 진행", "goal로 만들어줘". Compiles for Claude Code or Codex; suggests deep-suite synergy recipes when sibling plugins are installed.
+user-invocable: true
+---
+
+# deep-goal — goal 조건 컴파일러
+
+사용자의 장기 작업 요청을 받아 (1) goal 기능에 적합한지 평가하고, (2) 맞는 형태로 다듬고, (3) 필요한 사전 준비물을 발굴해, (4) 네이티브 `/goal`에 그대로 붙여 넣을 수 있는 완성된 조건을 컴파일해 제시하는 **메타-Guide** 플러그인이다.
+
+---
+
+## Invocation
+
+진입 경로를 맥락별로 명확히 구분한다:
+
+| 맥락 | 진입 방법 |
+|---|---|
+| **Claude Code 사용자** | `/deep-goal <요청>` (슬래시 커맨드) |
+| **Codex 사용자** | `$deep-goal:deep-goal <요청>` (`.codex-plugin` defaultPrompt와 일치하는 정식 진입) |
+| **SDK / 프로그래밍 invoke (Claude·Codex 공통, 사용자 진입 아님)** | `Skill({ skill: "deep-goal:deep-goal", args })` |
+
+`Skill({...})`은 에이전트/SDK 호출용이며 **Codex 사용자 진입으로 표기하지 않는다**. Codex 사용자의 정식 진입은 `$deep-goal:deep-goal`이다.
+
+무인수 호출 시 대화 진입: "무엇을 끝까지 진행하고 싶나요?" (→ [6단계 절차 요약](#6단계-절차-요약) 실행)
+
+---
+
+## Prerequisites
+
+이 스킬은 `deep-goal-workflow` 스킬과 함께 동작한다 (Claude Code가 description 매칭으로 자동 로드).
+
+**Codex / Copilot / Gemini fallback**: sibling 자동 로드가 약한 런타임에서는 `Skill({ skill: "deep-goal:deep-goal-workflow" })`로 명시 로드하거나, `${CLAUDE_PLUGIN_ROOT}/skills/deep-goal-workflow/references/<파일>` 경로로 Read한다.
+
+**Cross-platform self-containment**: 타 플랫폼에서 `deep-goal-workflow` 자동 로드가 약해도 동작하도록, 아래 핵심 규칙을 **의도적으로 인라인 보존**한다. 이는 `deep-goal-workflow`와의 의도적 duplication이며, 변경 시 양쪽을 동기화해야 한다.
+
+---
+
+## 활성화 모델 (인라인 핵심)
+
+네이티브 `/goal`은 플러그인/스킬이 프로그래밍적으로 **자동 호출 불가**다(공식 문서 검증 완료).
+
+deep-goal의 역할은 완성된 `/goal` 조건을 제시하는 데서 끝나고, **활성화 트리거는 사용자가 직접 누른다**. 활성화 마찰은 "한 줄 복사-붙여넣기"로 최소화한다.
+
+---
+
+## 적합성 3판정 (인라인 핵심)
+
+요청을 받으면 다음 기준으로 분류한다:
+
+| 판정 | 신호 | 처리 |
+|---|---|---|
+| ✅ **적합** | 단일 목표 · 검증 가능한 종료조건 · 적정 크기 · 진행 증명 루프 존재 | 4~6단계 직행 |
+| 🔧 **재구성** | 종료조건 모호 / 범위 과대 / 증명 방법 부재 | 측정 가능화·분해·커맨드 식별 제안 |
+| ⛔ **반려** | 검증 불가 주관 목표 / 단발성 / 무관한 잡다 목록 | 이유 + 대안(`/loop`·일반 작업) 제시 |
+
+상세 기준은 `references/fitness-rubric.md` 참조.
+
+---
+
+## 컴파일 4요소 + 평가자 표면화 규칙 (인라인 핵심)
+
+### 공통 4요소
+
+모든 플랫폼에서 컴파일된 조건은 다음 4요소를 포함해야 한다:
+
+1. **측정 가능한 종료상태** — 무엇이 달성되면 완료인가 (테스트 통과, 빌드 exit code 등)
+2. **증명 방법** — 종료상태를 어떻게 확인하는가 (커맨드 또는 아티팩트)
+3. **불변 제약** — goal 진행 중 바뀌면 안 되는 것 (API 시그니처 유지, 브랜치 보호 등)
+4. **상한** — 턴 또는 시간 한도 (`or stop after N turns`)
+
+### 평가자 표면화 규칙 (필수)
+
+Claude의 `/goal` 평가자(Haiku 모델)는 **도구를 호출하지 않으며**, 대화에 **표면화된 출력**만으로 종료 조건 충족 여부를 판정한다.
+
+**따라서 모든 컴파일된 조건에는 다음 지침을 반드시 포함한다:**
+
+> "각 단계/게이트 결과를 대화에 명시 보고하라."
+
+이 지침이 없으면 Claude가 내부적으로 검증을 완료해도 평가자가 종료를 판정하지 못한다. 대화에 명시 보고된 결과가 있어야 종료 판정이 가능하다.
+
+---
+
+## 플랫폼 분기 요약 (인라인 핵심)
+
+| 플랫폼 | 핵심 규칙 |
+|---|---|
+| **Claude Code** | 평가자가 도구 없이 대화 표면화 출력만 판정 → 각 단계 결과 명시 보고 필수, 4,000자 한도 준수, `or stop after N turns` 상한 권장 |
+| **Codex** | contract 형태(달성/변경금지/검증/종료) + 체크포인트·진행 로그, `pause`/`resume` 활용 안내, PLAN.md 적극 활용 |
+
+**PLAN.md 분리 임계치**: 조건이 ~2,800자 초과 예상 또는 순차 게이트 3개 이상이면 시퀀스를 PLAN.md로 분리하고 조건을 압축한다.
+
+상세 분기표는 `references/platform-matrix.md` 참조.
+
+---
+
+## 6단계 절차 요약
+
+상세 절차는 `deep-goal-workflow` 스킬 참조. 아래는 인라인 요약:
+
+| 단계 | 작업 |
+|---|---|
+| ① **감지** | 요청 파싱 / 플랫폼(Claude·Codex) / git 여부 / 설치된 deep-* 플러그인 감지 |
+| ② **적합성 평가** | fitness-rubric 적용 → 적합/재구성/반려 판정 |
+| ③ **재구성 대화** | 균형 게이트 — 종료조건 보강·범위 분해·증명 커맨드 식별 / 구조적 부적합 시 반려 + 대안 |
+| ④ **레시피 매칭** | 감지된 플러그인으로 시너지 레시피 제안, 없으면 단발 goal |
+| ⑤ **사전 준비물 탐색** | Glob/Read로 읽을 파일·증명 커맨드·불변 제약 발굴 |
+| ⑥ **컴파일 + 제시** | 4요소 + 표면화 지침 + 플랫폼 분기 적용 → 복사용 코드블록 + 활성화 안내 |
+
+---
+
+## 무인수 대화 진입
+
+`/deep-goal` 또는 `$deep-goal:deep-goal`을 인수 없이 호출하면:
+
+> **"무엇을 끝까지 진행하고 싶나요? 목표를 설명해주시면 goal 조건으로 컴파일해 드립니다."**
+
+사용자의 응답을 받아 6단계 절차를 시작한다.
