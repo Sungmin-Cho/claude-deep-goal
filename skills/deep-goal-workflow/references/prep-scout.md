@@ -41,9 +41,17 @@ git rev-parse --is-inside-work-tree 2>/dev/null && echo "git" || echo "non-git"
 **2b. `Makefile` 확인**
 
 ```bash
-# Makefile의 타겟 목록 확인
-make -qp 2>/dev/null | grep '^[a-zA-Z][a-zA-Z0-9_-]*:' | head -20
+# Makefile 텍스트를 직접 읽어 타겟명 추출 (make 실행 금지)
+grep -E '^[a-zA-Z][a-zA-Z0-9_-]*[[:space:]]*:' Makefile 2>/dev/null | head -20
+# 또는 awk로 타겟만 추출
+awk -F: '/^[a-zA-Z][a-zA-Z0-9_-]* *:/ {print $1}' Makefile 2>/dev/null | head -20
 ```
+
+> **보안 주의**: `make -qp` 등 Makefile을 직접 실행하는 방식은 금지한다.
+> Repo-controlled Makefile은 `$(shell ...)` 구문으로 임의 코드를 실행할 수 있어
+> scouting 중 의도치 않은 부수 효과가 발생할 수 있다.
+> Makefile은 반드시 **텍스트로만 읽어** (rg/awk/grep) 타겟명을 추출한다.
+> make를 실행해야 하는 경우는 "untrusted — 사용자 명시 승인 필요"로 표시한다.
 
 `test`, `build`, `check`, `verify` 타겟 우선 추출.
 
